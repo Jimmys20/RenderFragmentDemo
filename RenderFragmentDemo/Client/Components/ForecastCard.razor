@@ -1,0 +1,60 @@
+﻿<div class="card">
+  <div class="card-header">
+    @*Weather Forecasts*@
+    @*@HeaderTemplate*@
+    @if (HeaderTemplate != null)
+		{
+			@HeaderTemplate
+		}
+		else
+		{
+			@:Weather Forecasts
+		}
+	</div>
+
+	<div class="list-group list-group-flush">
+		@foreach (var forecast in Forecasts)
+		{
+			@*<div class="list-group-item">
+				@($"{forecast.Date}, {forecast.TemperatureC}, {forecast.TemperatureF}, {forecast.Summary}")
+				</div>*@
+
+			<div class="list-group-item">
+				@if (ChildContent != null)
+				{
+					@ChildContent(forecast)
+				}
+				else
+				{
+					@($"{forecast.Date}, {forecast.TemperatureC}, {forecast.TemperatureF}, {forecast.Summary}")
+				}
+			</div>
+		}
+	</div>
+
+	<div class="card-footer">
+		@*Count = @Forecasts.Count*@
+		@*@FooterTemplate*@
+		@if (FooterTemplate != null)
+		{
+			@FooterTemplate
+		}
+		else
+		{
+			<text>Count = @Forecasts.Count</text>
+		}
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public List<WeatherForecast> Forecasts { get; set; }
+
+	[Parameter]
+	public RenderFragment HeaderTemplate { get; set; }	
+	[Parameter]
+	public RenderFragment FooterTemplate { get; set; }
+
+	[Parameter]
+	public RenderFragment<WeatherForecast> ChildContent { get; set; }
+}

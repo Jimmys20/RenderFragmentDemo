@@ -1,7 +1,66 @@
 ﻿@page "/demo1"
+@inject HttpClient Http
 
 <h3>Demo1</h3>
 
-@code {
+@if (forecasts != null)
+{
+	<div class="row">
+		<div class="col-lg-4">
+			<ForecastCard Forecasts="forecasts" />
+		</div>
 
+		<div class="col-lg-4">
+			<ForecastCard Forecasts="forecasts">
+				<HeaderTemplate>
+					<b><i>Average Temp. (C)</i></b>
+				</HeaderTemplate>
+
+				<FooterTemplate>
+					<span class="text-muted">
+						Average = @forecasts.Average(f => f.TemperatureC)
+					</span>
+				</FooterTemplate>
+
+				<ChildContent>
+					<div class="row">
+						<div class="col-6">@context.Date.ToString("dd/MM/yyyy")</div>
+						<div class="col-6">@context.Summary</div>
+					</div>
+
+					<div class="row">
+						<div class="col-6">Temp. (C) = @context.TemperatureC</div>
+						<div class="col-6">Temp. (F) = @context.TemperatureF</div>
+					</div>
+				</ChildContent>
+			</ForecastCard>
+		</div>
+
+		<div class="col-lg-4">
+			<ForecastCard Forecasts="forecasts" Context="forecast">
+				<div class="row">
+					<div class="col-6">@forecast.Date.ToString("dd/MM/yyyy")</div>
+					<div class="col-6">@forecast.Summary</div>
+				</div>
+
+				<div class="row">
+					<div class="col-6">Temp. (C) = @forecast.TemperatureC</div>
+					<div class="col-6">Temp. (F) = @forecast.TemperatureF</div>
+				</div>
+			</ForecastCard>
+		</div>
+	</div>
+}
+else
+{
+	<p><em>Loading...</em></p>
+}
+
+@code {
+	private List<WeatherForecast> forecasts;
+
+	protected override async Task OnInitializedAsync()
+	{
+		forecasts = await Http.GetFromJsonAsync<List<WeatherForecast>>("WeatherForecast");
+	}
 }
